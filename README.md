@@ -315,7 +315,7 @@ system:
       ip: 192.168.131.1
   ros2:
     namespace: j100_0860
-    domain_id: 0                            
+    domain_id: 0                           
     middleware:
       implementation: rmw_fastrtps_cpp      #only supported option
 platform:
@@ -328,6 +328,96 @@ platform:
   battery:
     model: HE2613
     configuration: S1P1
+sensors:
+  camera: #https://docs.clearpathrobotics.com/docs/ros/config/yaml/sensors/cameras
+  - model: axis_camera   #need to get driver for this camera on github
+    urdf_enabled: true   #need to set up urdf
+    launch_enabled: true
+    parent: base_link
+    xyz: [0.15, 0.0, 0.18]
+    rpy: [0.0, 0.0, 0.0]
+    ros_parameters:
+      axis_camera:
+        device_type: q62
+
+        hostname: "192.168.0.90"
+        http_port: 80
+        username: "root"
+        password: ""
+        camera_info_url: ""
+        use_encrypted_password : False
+        camera : 1
+
+        width: 640
+        height: 480
+        fps: 20
+        tf_prefix: "axis"
+
+        ptz: True
+        min_pan: -3.141592653589793
+        max_pan: 3.141592653589793
+        min_tilt: 0.0
+        max_tilt: 1.5707963267948966
+        min_zoom: 1
+        max_zoom: 24
+        max_pan_speed: 2.61
+        max_tilt_speed: 2.61
+
+        ptz_teleop: True
+        button_enable_pan_tilt : -1
+        button_enable_zoom     : -1
+        axis_pan      : 3
+        axis_tilt     : 4
+        invert_tilt   : False
+        axis_zoom_in: 5
+        axis_zoom_out: 2
+        zoom_in_offset: -1.0
+        zoom_out_offset: -1.0
+        zoom_in_scale: -0.5
+        zoom_out_scale: 0.5
+        scale_pan     : 2.61
+        scale_tilt    : 2.61
+        scale_zoom    : 100.0
+
+        ir: False
+        defog: False
+        wiper: False
+
+  # Model VLP16 https://docs.clearpathrobotics.com/docs/ros/config/yaml/sensors/lidar3d
+  lidar3d:
+  - model: velodyne_lidar
+    urdf_enabled: true
+    launch_enabled: true
+    parent: base_link
+    xyz: [-0.15 , 0.0, 0.18]
+    rpy: [0.0, 0.0, 0.0]
+    ros_parameters:
+      velodyne_driver_node:
+        frame_id: lidar3d_0_laser
+        device_ip: 192.168.131.25
+        port: 2368
+        model: VLP16
+      velodyne_transform_node:
+        model: VLP16
+        calibration: "/opt/ros/humble/share/\
+          velodyne_pointcloud/params/VLP16db.yaml"
+        fixed_frame: lidar3d_0_laser
+        target_frame: lidar3d_0_laser
+  
+  lidar2d: #https://docs.clearpathrobotics.com/docs/ros/config/yaml/sensors/lidar2d
+  - model: hokuyo_ust
+    urdf_enabled: true
+    launch_enabled: true
+    parent: base_link
+    xyz: [0.15, 0.1, 0.19]
+    rpy: [0.0, 1.57, 0.0]             #angle in radians
+    ros_parameters:
+      urg_node:
+        laser_frame_id: lidar2d_0_laser
+        ip_address: 192.168.131.20
+        ip_port: 10940
+        angle_min: -2.356
+        angle_max: 2.356
 
 ```
 ## Serial Number
