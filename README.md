@@ -328,8 +328,12 @@ platform:
   battery:
     model: HE2613
     configuration: S1P1
+
 sensors:
-  camera: #https://docs.clearpathrobotics.com/docs/ros/config/yaml/sensors/cameras
+
+  # Clearpath Camera Docs https://docs.clearpathrobotics.com/docs/ros/config/yaml/sensors/cameras 
+  # Axis Camera Github Repo https://github.com/ros-drivers/axis_camera/tree/humble-devel
+  camera: 
   - model: axis_camera   #need to get driver for this camera on github
     urdf_enabled: true   #need to set up urdf
     launch_enabled: true
@@ -384,6 +388,8 @@ sensors:
         wiper: False
 
   # Model VLP16 https://docs.clearpathrobotics.com/docs/ros/config/yaml/sensors/lidar3d
+  # 3D Lidar Bitbucket Repo https://bitbucket.org/DataspeedInc/velodyne_simulator/src/ros2/
+
   lidar3d:
   - model: velodyne_lidar
     urdf_enabled: true
@@ -403,8 +409,11 @@ sensors:
           velodyne_pointcloud/params/VLP16db.yaml"
         fixed_frame: lidar3d_0_laser
         target_frame: lidar3d_0_laser
-  
-  lidar2d: #https://docs.clearpathrobotics.com/docs/ros/config/yaml/sensors/lidar2d
+
+ # Clearpath Docs for 2D Lidar https://docs.clearpathrobotics.com/docs/ros/config/yaml/sensors/lidar2d
+ # 2D Lidar Github Repo https://github.com/ros-drivers/urg_node
+
+  lidar2d:
   - model: hokuyo_ust
     urdf_enabled: true
     launch_enabled: true
