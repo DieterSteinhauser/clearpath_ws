@@ -304,7 +304,7 @@ ros2 launch clearpath_gz simulation.launch.py
 
 https://docs.clearpathrobotics.com/docs/ros/config/yaml/overview
 
-Next, we must configure the robot and it's attachments in the `robot.yaml` file. This file is located in the `clearpath' folder within the home folder
+Next, we must configure the robot and it's attachments in the `robot.yaml` file. This file is located in the `clearpath' folder within the home directory. Below is the content of our robot.yaml file.
 
 ```
 serial_number: j100-0860
@@ -329,4 +329,151 @@ platform:
     model: HE2613
     configuration: S1P1
 
+```
+## Serial Number
+The Clearpath serial number is composed of two sections, separated by a hyphen. For example, A Jackal `j100-0000` has an alpha-numerical code for the robot platform `j100` and a unit number `0000`.
+
+Every robot platform has specific attachments that are selected based on the serial number passed. Therefore, it is required that a serial number is specified in the robot.yaml.
+
+## Username
+The username indicates the username that will be used to run all ROS nodes. If this username needs to be changed then the robot services must be reinstalled as directed in the software installation instructions.
+
+## Hosts
+The hosts section serves as a way to match hostnames to IP addresses. By default, Clearpath robots use the serial number as the hostname and have a default IP of 192.168.131.1. This section must define ip addresses for all hostnames that appear in the remainder of the robot.yaml file.
+
+```
+  hosts:
+    - hostname: cpr-a200-0000 # The robot computer
+      ip: 192.168.131.1
+    - hostname: offboard-computer
+      ip: 192.168.131.5
+```
+
+
+## ROS2 Environment
+
+namespace
+  - Datatype: String
+  - Description: Specified will be appended as a prefix to all sensor topics to prevent topics from being overloaded when multiple robots are on the same network and domain ID.
+
+domain_id
+  - Datatype: Integer
+  - Description: Specifies the ROS 2 domain ID to use.
+
+middleware
+  - Datatype: env
+  - Description: Specifies the ROS 2 middleware settings.
+  - For more details, see here: https://docs.clearpathrobotics.com/docs/ros/config/yaml/system#middleware
+
+workspaces
+  - Datatype: list
+  - Description: Indicates a list of custom ROS 2 workspaces that need to be sourced by specifying the path to the setup.bash or set to [] to leave it blank.
+
+
+  Example ROS2 Environment
+
+```
+ros2:
+  username: administrator
+  namespace: a200_0000
+  domain_id: 0
+  middleware: # This section is described further below
+    implementation: rmw_fastrtps_cpp
+  workspaces:
+    - /home/administrator/colcon_ws/install/setup.bash # Path to the custom workspace
+```
+
+## J100 Attachments
+
+### Fenders
+
+https://docs.clearpathrobotics.com/docs/ros/config/yaml/platform/attachments/j100
+
+The default fenders come standard with every J100. The sensor fenders come have additional mounting points at the front and rear. If configured with the top plate "ark enclosure", an additional attachment is required in the yaml.
+
+```
+platform:
+  attachments:
+    - name: front_fender
+      type: j100.fender
+      model: default # 'sensor' for sensor fenders
+      parent: base_link
+      xyz: [0.0, 0.0, 0.0]
+      rpy: [0.0, 0.0, 0.0]
+      enabled: true
+    - name: rear_fender
+      type: j100.fender
+      model: default # 'sensor' for sensor fenders
+      parent: base_link
+      xyz: [0.0, 0.0, 0.0]
+      rpy: [0.0, 0.0, 3.1415]
+      enabled: true
+
+    # ark enclosure top plate if desired
+    - name: ark_enclosure
+      type: j100.top_plate
+      model: ark_enclosure
+      parent: default_mount
+      xyz: [0.0, 0.0, 0.0]
+      rpy: [0.0, 0.0, 0.0]
+      enabled: true
+```
+
+## J100 battery
+
+Each robot platform can support different types of batteries, and in different configurations. The configuration is how many batteries the robot has in series and parallel. There is only one battery currently supported for the J100 platform.
+
+
+https://docs.clearpathrobotics.com/docs/ros/config/yaml/platform/battery
+
+```
+battery:
+  model: HE2613
+  configuration: S1P1
+```
+
+## Controllers
+
+two types of controllers are supported on all platforms:
+
+ps4: standard Playstation4 controller.
+logitech: Logitech F710
+
+```
+controller: ps4 # or logitech
+```
+
+## Extras
+
+https://docs.clearpathrobotics.com/docs/ros/config/yaml/platform/extras
+
+A common use case is to set and update the parameters to the platform_velocity_controller node. These can be used to modify the linear and angular velocity and acceleratation.
+
+These can be passed in as follows:
+
+```
+platform:
+  extras:
+    ros_parameters:
+      platform_velocity_controller:
+        wheel_radius: 0.098
+        linear.x.max_velocity: 2.0
+        linear.x.min_velocity: -2.0
+        linear.x.max_acceleration: 20.0
+        linear.x.min_acceleration: -20.0
+        angular.z.max_velocity: 4.0
+        angular.z.min_velocity: -4.0
+        angular.z.max_acceleration: 25.0
+        angular.z.min_acceleration: -25.0
+```
+
+```
+extras:
+  urdf:
+    package: package_name
+    path: relative/path/to/urdf/in/package.urdf.xacro # or can contain /absolute/path/to/urdf.urdf.xacro
+  launch:
+    package: package_name
+    path: relative/path/to/launch/in/package.launch.py
+  ros_parameters: {} # node parameters, see below
 ```
