@@ -126,7 +126,7 @@ Root
 
 ## Folder Structure Example
 AutonomousRobots 
--   HW3 (Project)
+-   HW3 (Project Workspace)
     -   Build 
     -   src (workspace packages)
         -   ar_hw3 (package)
@@ -173,7 +173,7 @@ e.g.
 
 ### Check setup.cfg and see if there are any errors
 
-### download dependencies at the project folder 
+### download dependencies at the workspace folder 
 `rosdep install -i --from-path src --rosdistro humble -y`
 
 ## Build your package
@@ -299,6 +299,10 @@ https://docs.clearpathrobotics.com/docs/ros/tutorials/simulator/simulate
 ros2 launch clearpath_gz simulation.launch.py
 ```
 
+Advertising Topic: 
+```
+j100_0860/cmd_vel
+```
 
 # Configuring the Robot.yaml File
 
@@ -566,13 +570,40 @@ platform:
         angular.z.min_acceleration: -25.0
 ```
 
-```
-extras:
-  urdf:
-    package: package_name
-    path: relative/path/to/urdf/in/package.urdf.xacro # or can contain /absolute/path/to/urdf.urdf.xacro
-  launch:
-    package: package_name
-    path: relative/path/to/launch/in/package.launch.py
-  ros_parameters: {} # node parameters, see below
-```
+## Sensors 
+
+Clearpath has been migrating a large number of sensors from ROS1 to ROS2, and the documentation is still evolving. The overview of the sensors can be found here:
+
+  https://docs.clearpathrobotics.com/docs/ros/config/yaml/sensors/overview
+
+
+### Cameras
+
+  Clearpath Camera Docs https://docs.clearpathrobotics.com/docs/ros/config/yaml/sensors/cameras 
+
+  Axis Camera Github Repo https://github.com/ros-drivers/axis_camera/tree/humble-devel
+  camera: 
+
+### 2D Lidar
+
+ Clearpath Docs for 2D Lidar https://docs.clearpathrobotics.com/docs/ros/config/yaml/sensors/lidar2d
+
+ 2D Lidar Github Repo https://github.com/ros-drivers/urg_node
+
+ `ros2 run tf2_ros static_transform_publisher --frame-id world --child-frame-id laser`
+
+ `ros2 run robot_state_publisher robot_state_publisher <path to urdf file>`
+
+ `ros2 run urg_node urg_node_driver --ros-args --params-file /home/newton/clearpath_ws/src/urg_node/launch/urg_node_serial.yaml`
+ 
+
+### 3D Lidar
+
+  Model VLP16 https://docs.clearpathrobotics.com/docs/ros/config/yaml/sensors/lidar3d
+
+  3D Lidar Bitbucket Repo https://bitbucket.org/DataspeedInc/velodyne_simulator/src/ros2/
+
+# Bridge
+
+`ros2 run bridge bridge`
+
