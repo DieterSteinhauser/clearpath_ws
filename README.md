@@ -304,11 +304,19 @@ Advertising Topic:
 j100_0860/cmd_vel
 ```
 
+After populating the robot.yaml, we can launch gazebo  with the first command and control the movement of the jackal by using the `j100_0860/cmd_vel` topic. More details are provided below for configuring the robot and its attachments in the `robot.yaml` file.
+
+
+
+![Jackal Setup](images/jackal_setup.gif)
+
 # Configuring the Robot.yaml File
+
+For a detailed explanation of the robot.yaml file, please refer to the [ROS Configuration Guide](https://docs.clearpathrobotics.com/docs/ros/config/yaml/overview), corresponding to the link below.
 
 https://docs.clearpathrobotics.com/docs/ros/config/yaml/overview
 
-Next, we must configure the robot and it's attachments in the `robot.yaml` file. This file is located in the `clearpath' folder within the home directory. Below is the content of our robot.yaml file.
+ This `robot.yaml` file is located in the `clearpath' folder within the home directory. Below is the content of our robot.yaml file.
 
 ```
 serial_number: j100-0860
@@ -438,143 +446,14 @@ The Clearpath serial number is composed of two sections, separated by a hyphen. 
 
 Every robot platform has specific attachments that are selected based on the serial number passed. Therefore, it is required that a serial number is specified in the robot.yaml.
 
-## Username
-The username indicates the username that will be used to run all ROS nodes. If this username needs to be changed then the robot services must be reinstalled as directed in the software installation instructions.
-
-## Hosts
-The hosts section serves as a way to match hostnames to IP addresses. By default, Clearpath robots use the serial number as the hostname and have a default IP of 192.168.131.1. This section must define ip addresses for all hostnames that appear in the remainder of the robot.yaml file.
-
-```
-  hosts:
-    - hostname: cpr-a200-0000 # The robot computer
-      ip: 192.168.131.1
-    - hostname: offboard-computer
-      ip: 192.168.131.5
-```
-
-
-## ROS2 Environment
-
-namespace
-  - Datatype: String
-  - Description: Specified will be appended as a prefix to all sensor topics to prevent topics from being overloaded when multiple robots are on the same network and domain ID.
-
-domain_id
-  - Datatype: Integer
-  - Description: Specifies the ROS 2 domain ID to use.
-
-middleware
-  - Datatype: env
-  - Description: Specifies the ROS 2 middleware settings.
-  - For more details, see here: https://docs.clearpathrobotics.com/docs/ros/config/yaml/system#middleware
-
-workspaces
-  - Datatype: list
-  - Description: Indicates a list of custom ROS 2 workspaces that need to be sourced by specifying the path to the setup.bash or set to [] to leave it blank.
-
-
-  Example ROS2 Environment
-
-```
-ros2:
-  username: administrator
-  namespace: a200_0000
-  domain_id: 0
-  middleware: # This section is described further below
-    implementation: rmw_fastrtps_cpp
-  workspaces:
-    - /home/administrator/colcon_ws/install/setup.bash # Path to the custom workspace
-```
-
-## J100 Attachments
-
-### Fenders
-
-https://docs.clearpathrobotics.com/docs/ros/config/yaml/platform/attachments/j100
-
-The default fenders come standard with every J100. The sensor fenders come have additional mounting points at the front and rear. If configured with the top plate "ark enclosure", an additional attachment is required in the yaml.
-
-```
-platform:
-  attachments:
-    - name: front_fender
-      type: j100.fender
-      model: default # 'sensor' for sensor fenders
-      parent: base_link
-      xyz: [0.0, 0.0, 0.0]
-      rpy: [0.0, 0.0, 0.0]
-      enabled: true
-    - name: rear_fender
-      type: j100.fender
-      model: default # 'sensor' for sensor fenders
-      parent: base_link
-      xyz: [0.0, 0.0, 0.0]
-      rpy: [0.0, 0.0, 3.1415]
-      enabled: true
-
-    # ark enclosure top plate if desired
-    - name: ark_enclosure
-      type: j100.top_plate
-      model: ark_enclosure
-      parent: default_mount
-      xyz: [0.0, 0.0, 0.0]
-      rpy: [0.0, 0.0, 0.0]
-      enabled: true
-```
-
-## J100 battery
-
-Each robot platform can support different types of batteries, and in different configurations. The configuration is how many batteries the robot has in series and parallel. There is only one battery currently supported for the J100 platform.
-
-
-https://docs.clearpathrobotics.com/docs/ros/config/yaml/platform/battery
-
-```
-battery:
-  model: HE2613
-  configuration: S1P1
-```
-
-## Controllers
-
-two types of controllers are supported on all platforms:
-
-ps4: standard Playstation4 controller.
-logitech: Logitech F710
-
-```
-controller: ps4 # or logitech
-```
-
-## Extras
-
-https://docs.clearpathrobotics.com/docs/ros/config/yaml/platform/extras
-
-A common use case is to set and update the parameters to the platform_velocity_controller node. These can be used to modify the linear and angular velocity and acceleratation.
-
-These can be passed in as follows:
-
-```
-platform:
-  extras:
-    ros_parameters:
-      platform_velocity_controller:
-        wheel_radius: 0.098
-        linear.x.max_velocity: 2.0
-        linear.x.min_velocity: -2.0
-        linear.x.max_acceleration: 20.0
-        linear.x.min_acceleration: -20.0
-        angular.z.max_velocity: 4.0
-        angular.z.min_velocity: -4.0
-        angular.z.max_acceleration: 25.0
-        angular.z.min_acceleration: -25.0
-```
-
 ## Sensors 
 
 Clearpath has been migrating a large number of sensors from ROS1 to ROS2, and the documentation is still evolving. The overview of the sensors can be found here:
 
   https://docs.clearpathrobotics.com/docs/ros/config/yaml/sensors/overview
+
+
+Clearpath seems to handle most of the sensor driver support for the Jackal. As long as the sensor is available in their documentation and configured in the robot.yaml, it should as soon as gazebo is launched. Below are the sensors we chose to use, links and notes for their drivers.
 
 
 ### Cameras
@@ -586,20 +465,25 @@ Clearpath has been migrating a large number of sensors from ROS1 to ROS2, and th
 
 ### 2D Lidar
 
+![Hokuyo 2D Lidar](images/hokuyo_2d.png)
+
  Clearpath Docs for 2D Lidar https://docs.clearpathrobotics.com/docs/ros/config/yaml/sensors/lidar2d
 
  2D Lidar Github Repo https://github.com/ros-drivers/urg_node
 
+ !!! Note Note
+
+    These commands do not seem to be necessary to run in parallel with the clearpath.
+
  `ros2 run tf2_ros static_transform_publisher --frame-id world --child-frame-id laser`
 
- `ros2 run robot_state_publisher robot_state_publisher <path to urdf file>`
-
- `ros2 run urg_node urg_node_driver --ros-args --params-file /home/newton/clearpath_ws/src/urg_node/launch/urg_node_serial.yaml`
- 
+ `ros2 run robot_state_publisher robot_state_publisher /home/newton/clearpath_ws/src/urg_node/launch/hokuyo_laser.urdf`
 
 ### 3D Lidar
 
   Model VLP16 https://docs.clearpathrobotics.com/docs/ros/config/yaml/sensors/lidar3d
+
+  ![Velodyne 3D Lidar](images/velodyne_3d.png)
 
   3D Lidar Bitbucket Repo https://bitbucket.org/DataspeedInc/velodyne_simulator/src/ros2/
 
@@ -607,3 +491,24 @@ Clearpath has been migrating a large number of sensors from ROS1 to ROS2, and th
 
 `ros2 run bridge bridge`
 
+# Interacting With Sensors in Rviz
+
+Launch Rviz2 with the following command
+
+`rviz2`
+
+In Rviz, you can add a sensor by selecting `Add` from the menu bar, then sort by `topic`. You can then select the type of sensor you want to add and configure it according to your needs. If you have configured the clearpath robot.yaml correctly, you should be able to see the sensors in Rviz.
+
+![Rviz Sensors](images/rviz_sensors.png)
+
+We then need to add a frame of reference for Rviz. We can do this by selecting `Fixed Frame` from the menu bar. You can then use the dropdown to select a frame of reference that matches your robot's frame of reference or write in the frame of reference corresponding to the sensor you are interested in. 
+
+For example, if you are using a Hokuyo 2D Lidar, you can select `lidar3d_0_laser` as your fixed frame. Once you have selected the fixed frame, you should be able to see the sensors data in Rviz.
+
+![Rviz Frame](images/rviz_frame.png)
+
+# Bridging Sensors and Actuators
+
+For a quick demo, we decided to implement a circular motion for our robot by having a node publish to the `j100_0860/cmd_vel` topic. During this process, we observed the sensor data in Rviz to visualize the surrounding environment.
+
+![Circular motion with Jackal and Rviz pointcloud](images/circle_with_rviz.gif)
