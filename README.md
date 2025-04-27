@@ -202,6 +202,8 @@ e.g.
 
 `ros2 topic list`
 
+`ign topic -l`
+
 `ros2 run turtlesim turtlesim_node`
 
 ### Turn on the usb_cam
@@ -512,3 +514,54 @@ For example, if you are using a Hokuyo 2D Lidar, you can select `lidar3d_0_laser
 For a quick demo, we decided to implement a circular motion for our robot by having a node publish to the `j100_0860/cmd_vel` topic. During this process, we observed the sensor data in Rviz to visualize the surrounding environment.
 
 ![Circular motion with Jackal and Rviz pointcloud](images/circle_with_rviz.gif)
+
+
+
+# Navigation and Obstacle Avoidance
+
+https://docs.nav2.org/index.html
+
+https://github.com/Tinker-Twins/Autonomy-Science-And-Systems/tree/main
+
+
+
+# Installing Nav2 
+
+`sudo apt update && sudo apt upgrade -y`
+
+`sudo apt install ros-humble-navigation2`
+
+`sudo apt install ros-humble-nav2-bringup`
+
+`sudo apt install ros-humble-turtlebot3-gazebo`
+
+
+# Demo Nav2 with the turtlebot
+```
+source /opt/ros/humble/setup.bash
+export TURTLEBOT3_MODEL=waffle  # Iron and older only with Gazebo Classic
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models # Iron and older only with Gazebo Classic
+```
+`ros2 launch nav2_bringup tb3_simulation_launch.py headless:=False`
+
+# Using Nav2 with the Jackal
+
+https://docs.clearpathrobotics.com/docs/ros2humble/ros/tutorials/navigation_demos/nav2
+
+Launch four separate terminals for the following nodes.
+
+`ros2 launch clearpath_gz simulation.launch.py`
+
+`ros2 launch clearpath_viz view_navigation.launch.py namespace:=j100_0860`
+
+`ros2 launch clearpath_nav2_demos localization.launch.py setup_path:=$HOME/clearpath/ use_sim_time:=true`
+
+`ros2 launch clearpath_nav2_demos nav2.launch.py setup_path:=$HOME/clearpath/ use_sim_time:=true`
+
+# SLAM with the jackal
+
+`ros2 launch clearpath_viz view_navigation.launch.py namespace:=j100_0860`
+
+`ros2 launch clearpath_nav2_demos slam.launch.py setup_path:=$HOME/clearpath/ use_sim_time:=true`
+
+`ros2 launch clearpath_nav2_demos nav2.launch.py setup_path:=$HOME/clearpath/ use_sim_time:=true`
