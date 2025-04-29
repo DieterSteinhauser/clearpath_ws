@@ -1,5 +1,5 @@
 
-# ROS2 Notes
+# ROS2 Final Project
 Dieter Steinhauser
 
 Trevor Free
@@ -8,12 +8,12 @@ Trevor Free
 
 University of Florida - Autonomous Robots
 
-
+<!-- 
 # Table of Contents
 
  - [Ubuntu 22.04 First Time Setup](#Ubuntu-22.04-first-time-setup)
  - [ROS2 Humble First Time Setup](#ROS2-Humble-First-Time-Setup)
- - [Project and Package Creation](#Project-and-Package-Creation)
+ - [Project and Package Creation](#Project-and-Package-Creation) -->
 
 
 
@@ -347,59 +347,59 @@ sensors:
 
   # Clearpath Camera Docs https://docs.clearpathrobotics.com/docs/ros/config/yaml/sensors/cameras 
   # Axis Camera Github Repo https://github.com/ros-drivers/axis_camera/tree/humble-devel
-  camera: 
-  - model: axis_camera   #need to get driver for this camera on github
-    urdf_enabled: true   #need to set up urdf
-    launch_enabled: true
-    parent: base_link
-    xyz: [0.15, 0.0, 0.18]
-    rpy: [0.0, 0.0, 0.0]
-    ros_parameters:
-      axis_camera:
-        device_type: q62
+  # camera: 
+  # - model: axis_camera   #need to get driver for this camera on github
+  #   urdf_enabled: true   #need to set up urdf
+  #   launch_enabled: true
+  #   parent: base_link
+  #   xyz: [0.15, 0.0, 0.18]
+  #   rpy: [0.0, 0.0, 0.0]
+  #   ros_parameters:
+  #     axis_camera:
+  #       device_type: q62
 
-        hostname: "192.168.0.90"
-        http_port: 80
-        username: "root"
-        password: ""
-        camera_info_url: ""
-        use_encrypted_password : False
-        camera : 1
+  #       hostname: "192.168.0.90"
+  #       http_port: 80
+  #       username: "root"
+  #       password: ""
+  #       camera_info_url: ""
+  #       use_encrypted_password : False
+  #       camera : 1
 
-        width: 640
-        height: 480
-        fps: 20
-        tf_prefix: "axis"
+  #       width: 640
+  #       height: 480
+  #       fps: 20
+  #       tf_prefix: "axis"
 
-        ptz: True
-        min_pan: -3.141592653589793
-        max_pan: 3.141592653589793
-        min_tilt: 0.0
-        max_tilt: 1.5707963267948966
-        min_zoom: 1
-        max_zoom: 24
-        max_pan_speed: 2.61
-        max_tilt_speed: 2.61
+  #       ptz: True
+  #       min_pan: -3.141592653589793
+  #       max_pan: 3.141592653589793
+  #       min_tilt: 0.0
+  #       max_tilt: 1.5707963267948966
+  #       min_zoom: 1
+  #       max_zoom: 24
+  #       max_pan_speed: 2.61
+  #       max_tilt_speed: 2.61
 
-        ptz_teleop: True
-        button_enable_pan_tilt : -1
-        button_enable_zoom     : -1
-        axis_pan      : 3
-        axis_tilt     : 4
-        invert_tilt   : False
-        axis_zoom_in: 5
-        axis_zoom_out: 2
-        zoom_in_offset: -1.0
-        zoom_out_offset: -1.0
-        zoom_in_scale: -0.5
-        zoom_out_scale: 0.5
-        scale_pan     : 2.61
-        scale_tilt    : 2.61
-        scale_zoom    : 100.0
+  #       ptz_teleop: True
+  #       button_enable_pan_tilt : -1
+  #       button_enable_zoom     : -1
+  #       axis_pan      : 3
+  #       axis_tilt     : 4
+  #       invert_tilt   : False
+  #       axis_zoom_in: 5
+  #       axis_zoom_out: 2
+  #       zoom_in_offset: -1.0
+  #       zoom_out_offset: -1.0
+  #       zoom_in_scale: -0.5
+  #       zoom_out_scale: 0.5
+  #       scale_pan     : 2.61
+  #       scale_tilt    : 2.61
+  #       scale_zoom    : 100.0
 
-        ir: False
-        defog: False
-        wiper: False
+  #       ir: False
+  #       defog: False
+  #       wiper: False
 
   # Model VLP16 https://docs.clearpathrobotics.com/docs/ros/config/yaml/sensors/lidar3d
   # 3D Lidar Bitbucket Repo https://bitbucket.org/DataspeedInc/velodyne_simulator/src/ros2/
@@ -432,8 +432,8 @@ sensors:
     urdf_enabled: true
     launch_enabled: true
     parent: base_link
-    xyz: [0.15, 0.1, 0.19]
-    rpy: [0.0, 1.57, 0.0]             #angle in radians
+    xyz: [0.15, 0.0, 0.19]
+    rpy: [0.0, 0.0, 0.0]             #angle in radians
     ros_parameters:
       urg_node:
         laser_frame_id: lidar2d_0_laser
@@ -441,7 +441,6 @@ sensors:
         ip_port: 10940
         angle_min: -2.356
         angle_max: 2.356
-
 ```
 ## Serial Number
 The Clearpath serial number is composed of two sections, separated by a hyphen. For example, A Jackal `j100-0000` has an alpha-numerical code for the robot platform `j100` and a unit number `0000`.
@@ -548,20 +547,34 @@ export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gaz
 
 https://docs.clearpathrobotics.com/docs/ros2humble/ros/tutorials/navigation_demos/nav2
 
-Launch four separate terminals for the following nodes.
 
+# Navigation, Localization, and Mapping with the Jackal
+
+For a quick startup, run bash script located in the launch directory
+
+`clearpath_ws/launch$ bash launch.bash`
+
+Alternatively, you can start the stack by launching these lines in separate terminals
+
+### Launching Gazebo Fortress with the Configured Clearpath Robot
 `ros2 launch clearpath_gz simulation.launch.py`
 
+### Launching Rviz Visualization with the Configured Clearpath Robot
 `ros2 launch clearpath_viz view_navigation.launch.py namespace:=j100_0860`
 
+### Launching the Jackal Localization Node with the Configured Clearpath Robot
 `ros2 launch clearpath_nav2_demos localization.launch.py setup_path:=$HOME/clearpath/ use_sim_time:=true`
 
+### Launching the Jackal Navigation Node with the Configured Clearpath Robot
 `ros2 launch clearpath_nav2_demos nav2.launch.py setup_path:=$HOME/clearpath/ use_sim_time:=true`
 
-# SLAM with the jackal
-
-`ros2 launch clearpath_viz view_navigation.launch.py namespace:=j100_0860`
-
+### Launching the Jackal SLAM Node with the Configured Clearpath Robot
 `ros2 launch clearpath_nav2_demos slam.launch.py setup_path:=$HOME/clearpath/ use_sim_time:=true`
 
-`ros2 launch clearpath_nav2_demos nav2.launch.py setup_path:=$HOME/clearpath/ use_sim_time:=true`
+
+# Waypoint Following (not working)
+
+We've attempted to use the `FollowWaypoints` action client in our `pathfinder` script, but it seems that the navigator is rejecting our waypoints. We've also tried using the `ActionClient` class directly from the `actionlib` module, but this approach doesn't seem to work either.
+
+`ros2 launch nav2_bringup bringup_launch.py map:=map_name.yaml`
+

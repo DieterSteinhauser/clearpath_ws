@@ -1,0 +1,1 @@
+ros2 launch clearpath_viz view_navigation.launch.py namespace:=j100_0860
