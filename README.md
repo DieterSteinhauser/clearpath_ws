@@ -571,6 +571,7 @@ Alternatively, you can start the stack by launching these lines in separate term
 ### Launching the Jackal SLAM Node with the Configured Clearpath Robot
 `ros2 launch clearpath_nav2_demos slam.launch.py setup_path:=$HOME/clearpath/ use_sim_time:=true`
 
+![Waypoint Selection](images/SLAM.gif)
 
 # Waypoint Following (not working)
 
@@ -578,3 +579,4 @@ We've attempted to use the `FollowWaypoints` action client in our `pathfinder` s
 
 `ros2 launch nav2_bringup bringup_launch.py map:=map_name.yaml`
 
+![Waypoint Selection](images/waypoints.gif)
